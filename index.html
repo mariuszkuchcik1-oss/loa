@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kodeks Wiedzy — Liceum Policyjne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --navy:     #0b1221;
+  --navy2:    #111d33;
+  --navy3:    #172445;
+  --navy4:    #1e2f52;
+  --steel:    #2c4a7c;
+  --steel2:   #3a5f9a;
+  --blue:     #4a7fc1;
+  --blue2:    #6495d4;
+  --silver:   #c8d4e8;
+  --silver2:  #a0b4cc;
+  --silver3:  #7090b0;
+  --gold:     #c8a84a;
+  --gold2:    #e0c060;
+  --green:    #2a7a4a;
+  --green2:   #35a060;
+  --red:      #8b1a1a;
+  --red2:     #c03030;
+  --text:     #d8e4f4;
+  --text2:    #90a8c4;
+  --text3:    #5a7898;
+  --border:   #1e3056;
+  --border2:  #2a4070;
+  --shadow:   rgba(0,10,30,0.5);
+  --glow:     rgba(74,127,193,0.15);
+}
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Roboto Condensed', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 15% 10%, rgba(42,74,124,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgba(11,18,33,0.8) 0%, transparent 50%);
+}
+
+/* ═══════════════════════════════════════════
+   SCAN LINES TEXTURE OVERLAY
+═══════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.012) 2px,
+    rgba(255,255,255,0.012) 4px
+  );
+  pointer-events: none; z-index: 0;
+}
+
+/* ═══════════════════════════════════════════
+   PARTICLES
+═══════════════════════════════════════════ */
+#particles {
+  position: fixed; top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none; z-index:0; overflow:hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: drift linear infinite;
+}
+
+@keyframes drift {
+  0%   { transform: translateY(100vh) translateX(0);  opacity: 0; }
+  8%   { opacity: 0.5; }
+  92%  { opacity: 0.2; }
+  100% { transform: translateY(-5vh) translateX(-20px); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════ */
+.top-bar {
+  background: var(--navy2);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative; z-index: 10;
+}
+
+.top-bar-left {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.badge-shield {
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px rgba(74,127,193,0.5));
+}
+
+.top-bar-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--text2);
+  text-transform: uppercase;
+}
+
+.top-bar-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--green2);
+  letter-spacing: 2px; font-weight: 700;
+}
+
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green2);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.3; }
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.app {
+  position: relative; z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+.header {
+  text-align: center;
+  padding: 44px 0 36px;
+  position: relative;
+  margin-bottom: 36px;
+}
+
+.header::after {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  margin-top: 28px;
+  width: 80px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+}
+
+.header-emblem {
+  font-size: 52px;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 20px rgba(74,127,193,0.4));
+  animation: pulse-emblem 3s ease-in-out infinite;
+}
+
+@keyframes pulse-emblem {
+  0%,100% { filter: drop-shadow(0 0 20px rgba(74,127,193,0.4)); }
+  50%     { filter: drop-shadow(0 0 32px rgba(74,127,193,0.7)); }
+}
+
+.header-tag {
+  display: inline-block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  color: var(--blue2);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding: 4px 18px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: rgba(74,127,193,0.06);
+}
+
+.header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(28px, 6vw, 52px);
+  font-weight: 700;
+  color: var(--silver);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(74,127,193,0.3);
+}
+
+.header h1 span {
+  color: var(--blue2);
+}
+
+.header-subtitle {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--text3);
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════ */
+.page { display: none; animation: pageIn 0.4s ease; }
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION LABEL
+═══════════════════════════════════════════ */
+.section-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--text3);
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+/* ═══════════════════════════════════════════
+   DIFFICULTY GRID
+═══════════════════════════════════════════ */
+.difficulty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.diff-btn {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 22px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.diff-btn::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0;
+  height: 2px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.diff-btn:hover::before { transform: scaleX(1); }
+
+.diff-btn:hover {
+  border-color: var(--steel2);
+  background: var(--navy3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,10,30,0.4);
+}
+
+.diff-btn.active {
+  border-color: var(--blue);
+  background: var(--navy3);
+  box-shadow: 0 0 20px rgba(74,127,193,0.15);
+}
+
+.diff-btn.active::before { transform: scaleX(1); }
+
+.diff-icon { font-size: 26px; display: block; margin-bottom: 8px; }
+
+.diff-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  color: var(--silver);
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.diff-desc {
+  font-size: 11px;
+  color: var(--text3);
+  font-style: italic;
+  font-family: 'Source Serif 4', serif;
+}
+
+/* ═══════════════════════════════════════════
+   RIDDLE LIST
+═══════════════════════════════════════════ */
+.riddle-list { display: flex; flex-direction: column; gap: 8px; }
+
+.riddle-card {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.riddle-card::before {
+  content: '';
+  position: absolute; left:0; top:0;
+  width: 3px; height: 100%;
+  background: var(--blue);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.22s ease;
+}
+
+.riddle-card:hover::before { transform: scaleY(1); }
+.riddle-card:hover {
+  border-color: var(--border2);
+  background: var(--navy3);
+  padding-left: 24px;
+}
+
+.riddle-card.solved::before { background: var(--green2); transform: scaleY(1); }
+.riddle-card.solved { border-color: rgba(42,122,74,0.3); }
+
+.riddle-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  color: var(--text3);
+  min-width: 28px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.riddle-preview { flex: 1; }
+.riddle-preview strong {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--silver);
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+.riddle-preview span {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+}
+
+.riddle-arrow {
+  color: var(--text3); font-size: 18px;
+  transition: transform 0.2s, color 0.2s;
+}
+.riddle-card:hover .riddle-arrow { transform: translateX(4px); color: var(--blue2); }
+
+.solved-badge {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: 1px;
+  color: var(--green2);
+  padding: 3px 10px;
+  border: 1px solid rgba(53,160,96,0.3);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════
+   RIDDLE PAGE
+═══════════════════════════════════════════ */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text3);
+  background: none; border: none; cursor: pointer;
+  margin-bottom: 28px; padding: 0;
+  transition: color 0.2s;
+}
+.back-btn:hover { color: var(--blue2); }
+
+.riddle-header { text-align: center; margin-bottom: 28px; }
+
+.riddle-number {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 4px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 4px 16px; border-radius: 2px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.badge-easy   { background: rgba(42,122,74,0.12);  color: var(--green2); border: 1px solid rgba(42,122,74,0.3); }
+.badge-medium { background: rgba(74,127,193,0.12); color: var(--blue2);  border: 1px solid rgba(74,127,193,0.3); }
+.badge-hard   { background: rgba(139,26,26,0.12);  color: var(--red2);   border: 1px solid rgba(139,26,26,0.3); }
+
+/* ─── Riddle Box ─── */
+.riddle-box {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 36px 36px 30px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 30px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.riddle-box::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--steel), var(--blue2), var(--steel));
+}
+
+.riddle-box::after {
+  content: '§';
+  position: absolute; bottom: 10px; right: 20px;
+  font-size: 80px;
+  color: var(--blue);
+  opacity: 0.04;
+  font-family: 'Oswald', sans-serif;
+  line-height: 1;
+}
+
+.riddle-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 18px;
+  line-height: 1.85;
+  color: var(--silver);
+  text-align: center;
+  font-style: italic;
+}
+
+/* ─── Answers ─── */
+.answers-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 4px; color: var(--text3);
+  text-align: center; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.answer-btn {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'Roboto Condensed', sans-serif;
+  transition: all 0.22s ease;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.answer-btn:hover:not(:disabled) {
+  border-color: var(--steel2);
+  background: var(--navy3);
+  color: var(--silver);
+  box-shadow: 0 0 12px rgba(74,127,193,0.12);
+}
+
+.answer-btn:disabled { cursor: default; }
+
+.answer-btn.correct {
+  border-color: var(--green2); background: rgba(42,122,74,0.1); color: var(--green2);
+  animation: pop 0.4s ease;
+}
+.answer-btn.wrong {
+  border-color: var(--red2); background: rgba(139,26,26,0.1); color: var(--red2);
+  animation: shake 0.4s ease;
+}
+
+@keyframes pop {
+  0%,100% { transform: scale(1); }
+  40%     { transform: scale(1.02); }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-5px); }
+  75%     { transform: translateX(5px); }
+}
+
+.answer-letter {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  width: 26px; height: 26px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy3); color: var(--text3); flex-shrink: 0;
+  transition: all 0.22s; border: 1px solid var(--border);
+}
+
+.answer-btn:hover:not(:disabled) .answer-letter {
+  background: rgba(74,127,193,0.15); color: var(--blue2);
+  border-color: var(--steel2);
+}
+
+/* ─── Success ─── */
+.success-msg {
+  background: rgba(42,122,74,0.08);
+  border: 1px solid rgba(53,160,96,0.3);
+  border-radius: 4px;
+  padding: 24px 20px;
+  text-align: center; display: none;
+  animation: pageIn 0.5s ease;
+  margin-bottom: 16px;
+}
+.success-msg.show { display: block; }
+.success-msg .icon { font-size: 30px; margin-bottom: 8px; }
+.success-msg h3 {
+  font-family: 'Oswald', sans-serif;
+  color: var(--green2); font-size: 18px;
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.success-msg p {
+  color: var(--text2); font-style: italic;
+  font-size: 14px; line-height: 1.6;
+  font-family: 'Source Serif 4', serif;
+}
+
+/* ─── Hint ─── */
+.hint-row { text-align: center; margin-bottom: 14px; }
+
+.hint-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; padding: 7px 22px;
+  border-radius: 2px; cursor: pointer;
+  transition: all 0.2s; text-transform: uppercase;
+}
+.hint-btn:hover { border-color: var(--blue2); color: var(--blue2); }
+
+.hint-box {
+  background: rgba(74,127,193,0.06);
+  border: 1px solid rgba(74,127,193,0.2);
+  border-radius: 4px;
+  padding: 14px 18px;
+  font-style: italic; color: var(--text2);
+  font-size: 14px; text-align: center;
+  margin-bottom: 16px; display: none;
+  animation: pageIn 0.3s ease;
+  font-family: 'Source Serif 4', serif;
+}
+.hint-box.show { display: block; }
+
+/* ─── Navigation ─── */
+.nav-row {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-top: 20px;
+}
+
+.nav-btn {
+  background: none; border: 1px solid var(--border2);
+  color: var(--text3);
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; padding: 9px 22px;
+  border-radius: 2px; cursor: pointer;
+  transition: all 0.2s; text-transform: uppercase;
+}
+.nav-btn:hover:not(:disabled) { border-color: var(--blue2); color: var(--blue2); }
+.nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+.progress-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; color: var(--text3);
+  letter-spacing: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer-deco {
+  text-align: center;
+  margin-top: 60px;
+  color: var(--text3);
+  font-size: 14px;
+  letter-spacing: 8px;
+  opacity: 0.3;
+  font-family: 'Oswald', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .difficulty-grid { grid-template-columns: 1fr; }
+  .answers-grid    { grid-template-columns: 1fr; }
+  .riddle-box      { padding: 22px 16px; }
+  .top-bar-status  { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <span class="badge-shield">🛡️</span>
+    <span class="top-bar-text">Liceum Policyjne — System Szkoleniowy</span>
+  </div>
+  <div class="top-bar-status">
+    <div class="status-dot"></div>
+    AKTYWNY
+  </div>
+</div>
+
+<div id="particles"></div>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-emblem">⚖️</div>
+    <div class="header-tag">Liceum Policyjne · Wiedza i Prawo</div>
+    <h1>Kodeks <span>Wiedzy</span></h1>
+    <div class="header-subtitle">Sprawdź swoją znajomość prawa i procedur</div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <div class="section-label">// Wybierz poziom trudności</div>
+    <div class="difficulty-grid">
+      <div class="diff-btn easy active" onclick="selectDifficulty('easy')">
+        <span class="diff-icon">🟢</span>
+        <span class="diff-name">Rekrut</span>
+        <span class="diff-desc">Podstawy służby</span>
+      </div>
+      <div class="diff-btn medium" onclick="selectDifficulty('medium')">
+        <span class="diff-icon">🔵</span>
+        <span class="diff-name">Aspirant</span>
+        <span class="diff-desc">Procedury i prawo</span>
+      </div>
+      <div class="diff-btn hard" onclick="selectDifficulty('hard')">
+        <span class="diff-icon">🔴</span>
+        <span class="diff-name">Oficer</span>
+        <span class="diff-desc">Wiedza ekspercka</span>
+      </div>
+    </div>
+    <div id="riddle-list-container"></div>
+    <div class="footer-deco">— SŁUŻYMY I CHRONIMY —</div>
+  </div>
+
+  <!-- RIDDLE PAGE -->
+  <div id="page-riddle" class="page">
+    <button class="back-btn" onclick="goHome()">← Powrót</button>
+    <div class="riddle-header">
+      <div class="riddle-number" id="riddle-num-label"></div>
+      <div id="difficulty-badge" class="difficulty-badge"></div>
+    </div>
+
+    <div class="riddle-box">
+      <div class="riddle-text" id="riddle-text"></div>
+    </div>
+
+    <div class="answers-label">// Wybierz odpowiedź</div>
+    <div class="answers-grid" id="answers-grid"></div>
+
+    <div class="hint-row">
+      <button class="hint-btn" onclick="showHint()">📋 Wskazówka</button>
+    </div>
+    <div class="hint-box" id="hint-box"></div>
+
+    <div class="success-msg" id="success-msg">
+      <div class="icon">✅</div>
+      <h3>Potwierdzone</h3>
+      <p id="success-text"></p>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">← Poprzednia</button>
+      <span class="progress-text" id="progress-text"></span>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Następna →</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="riddles_policja.js"></script>
+<script>
+// ── State ──────────────────────────────────
+let currentDiff = 'easy';
+let currentIdx  = 0;
+let solved = { easy: new Set(), medium: new Set(), hard: new Set() };
+
+// ── Particles ─────────────────────────────
+(function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left              = Math.random() * 100 + '%';
+    p.style.animationDuration = (12 + Math.random() * 16) + 's';
+    p.style.animationDelay    = (Math.random() * 14) + 's';
+    const size = (1.5 + Math.random() * 2.5) + 'px';
+    p.style.width = p.style.height = size;
+    const colors = [
+      'rgba(74,127,193,0.5)',
+      'rgba(100,149,212,0.4)',
+      'rgba(42,74,124,0.6)',
+      'rgba(160,180,204,0.25)'
+    ];
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    container.appendChild(p);
+  }
+})();
+
+// ── Difficulty ─────────────────────────────
+function selectDifficulty(diff) {
+  currentDiff = diff;
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.diff-btn.' + diff).classList.add('active');
+  renderRiddleList();
+}
+
+// ── Riddle List ────────────────────────────
+function renderRiddleList() {
+  const riddles = riddlesData[currentDiff];
+  let html = '<div class="riddle-list">';
+  riddles.forEach((r, i) => {
+    const isSolved = solved[currentDiff].has(i);
+    html += `
+      <div class="riddle-card${isSolved ? ' solved' : ''}" onclick="openRiddle(${i})">
+        <span class="riddle-num">0${i + 1}</span>
+        <div class="riddle-preview">
+          <strong>${r.title}</strong>
+          <span>${r.text.substring(0, 68)}…</span>
+        </div>
+        ${isSolved
+          ? '<span class="solved-badge">✓ Zaliczone</span>'
+          : '<span class="riddle-arrow">›</span>'
+        }
+      </div>`;
+  });
+  html += '</div>';
+  document.getElementById('riddle-list-container').innerHTML = html;
+}
+
+// ── Open Riddle ────────────────────────────
+function openRiddle(idx) {
+  currentIdx = idx;
+  renderRiddlePage();
+  document.getElementById('page-home').classList.remove('active');
+  document.getElementById('page-riddle').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── Render Riddle Page ─────────────────────
+function renderRiddlePage() {
+  const riddles    = riddlesData[currentDiff];
+  const r          = riddles[currentIdx];
+  const letters    = ['A', 'B', 'C', 'D'];
+  const diffLabels = { easy: 'Rekrut', medium: 'Aspirant', hard: 'Oficer' };
+  const diffClass  = { easy: 'badge-easy', medium: 'badge-medium', hard: 'badge-hard' };
+
+  document.getElementById('riddle-num-label').textContent =
+    `// Zagadka ${currentIdx + 1} z ${riddles.length}`;
+
+  const badge = document.getElementById('difficulty-badge');
+  badge.textContent = diffLabels[currentDiff];
+  badge.className   = 'difficulty-badge ' + diffClass[currentDiff];
+
+  document.getElementById('riddle-text').textContent = r.text;
+
+  let answersHtml = '';
+  r.answers.forEach((a, i) => {
+    answersHtml += `
+      <button class="answer-btn" onclick="checkAnswer(${i})" id="ans-${i}">
+        <span class="answer-letter">${letters[i]}</span>${a}
+      </button>`;
+  });
+  document.getElementById('answers-grid').innerHTML = answersHtml;
+
+  const hintBox = document.getElementById('hint-box');
+  hintBox.textContent = '📋 ' + r.hint;
+  hintBox.classList.remove('show');
+  document.getElementById('success-msg').classList.remove('show');
+
+  document.getElementById('progress-text').textContent =
+    `${currentIdx + 1} / ${riddles.length}`;
+  document.getElementById('prev-btn').disabled = currentIdx === 0;
+  document.getElementById('next-btn').disabled = currentIdx === riddles.length - 1;
+
+  if (solved[currentDiff].has(currentIdx)) markSolved();
+}
+
+// ── Check Answer ───────────────────────────
+function checkAnswer(idx) {
+  const r    = riddlesData[currentDiff][currentIdx];
+  const btns = document.querySelectorAll('.answer-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (idx === r.correct) {
+    btns[idx].classList.add('correct');
+    solved[currentDiff].add(currentIdx);
+    document.getElementById('success-text').textContent = r.success;
+    setTimeout(() => document.getElementById('success-msg').classList.add('show'), 300);
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[r.correct].classList.add('correct');
+    setTimeout(() => {
+      btns[idx].classList.remove('wrong');
+      btns.forEach(b => b.disabled = false);
+    }, 900);
+  }
+}
+
+function markSolved() {
+  const r    = riddlesData[currentDiff][currentIdx];
+  const btns = document.querySelectorAll('.answer-btn');
+  btns.forEach((b, i) => { b.disabled = true; if (i === r.correct) b.classList.add('correct'); });
+  document.getElementById('success-text').textContent = r.success;
+  document.getElementById('success-msg').classList.add('show');
+}
+
+function showHint() { document.getElementById('hint-box').classList.toggle('show'); }
+function navigate(dir) { currentIdx += dir; renderRiddlePage(); window.scrollTo(0, 0); }
+function goHome() {
+  document.getElementById('page-riddle').classList.remove('active');
+  document.getElementById('page-home').classList.add('active');
+  renderRiddleList();
+}
+
+// ── Init ───────────────────────────────────
+selectDifficulty('easy');
+</script>
+</body>
+</html>
